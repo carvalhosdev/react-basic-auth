@@ -1,6 +1,5 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { RootSate } from "../store";
 import { setCredentials } from "../../features/auth/authSlice";
+import { api } from "./apiService";
 
 export interface User {
     username:string
@@ -16,19 +15,8 @@ export interface LoginRequest{
     password:string
 }
 
-
-export const authApi = createApi({
-    baseQuery: fetchBaseQuery({
-        baseUrl: '/',
-        prepareHeaders: (headers, {getState}) => {
-            const token = (getState() as RootSate).auth.token
-            if(token){
-                headers.set('authorization', `Bearer ${token}`)
-            }
-            return headers;
-        }
-    }),
-    endpoints: (builder) => ({
+export const authApi =  api.injectEndpoints({
+    endpoints: builder => ({
         login: builder.mutation<UserResponse, LoginRequest>({
             query: (crendentials) => ({
                 url: "/login",
